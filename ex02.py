@@ -1,3 +1,4 @@
+import numpy as np
 class Vertice:
     def __init__(self, rotulo, distancia_objetivo):
         self.rotulo = rotulo
@@ -16,20 +17,20 @@ class Adjacente:
         self.custo = custo
 
 class Grafo:
-    arad = Vertice('Arad')
-    zerind = Vertice('Zerind')
-    oradea = Vertice('Oradea')
-    sibiu = Vertice('Sibiu')
-    timisoara = Vertice('Timisoara')
-    lugoj = Vertice('Lugoj')
-    mehadia = Vertice('Mehadia')
-    dobreta = Vertice('Dobreta')
-    craiova = Vertice('Craiova')
-    rimnicu = Vertice('Rimnicu')
-    fagaras = Vertice('Fagaras')
-    pitesti = Vertice('Pitesti')
-    bucharest = Vertice('Bucharest')
-    giurgiu = Vertice('Giurgiu')
+    arad = Vertice('Arad', 366)
+    zerind = Vertice('Zerind', 374)
+    oradea = Vertice('Oradea', 380)
+    sibiu = Vertice('Sibiu', 253)
+    timisoara = Vertice('Timisoara', 329)
+    lugoj = Vertice('Lugoj', 244)
+    mehadia = Vertice('Mehadia', 241)
+    dobreta = Vertice('Dobreta', 242)
+    craiova = Vertice('Craiova', 160)
+    rimnicu = Vertice('Rimnicu', 193)
+    fagaras = Vertice('Fagaras', 178)
+    pitesti = Vertice('Pitesti', 98)
+    bucharest = Vertice('Bucharest', 0)
+    giurgiu = Vertice('Giurgiu', 77)
 
     arad.adiciona_adjacente(Adjacente(zerind, 75))
     arad.adiciona_adjacente(Adjacente(sibiu, 140))
@@ -79,4 +80,49 @@ class Grafo:
 
 grafo = Grafo()
 
-grafo.arad.mostra_adjacentes()
+
+class VetorOrdenado:
+
+    def __init__(self, capacidade):
+        self.capacidade = capacidade
+        self.ultima_posicao = -1
+        # Mudança no tipo de dados
+        self.valores = np.empty(self.capacidade, dtype=object)
+
+    # Referência para o vértice e comparação com a distância para o objetivo
+    def insere(self, vertice):
+        if self.ultima_posicao == self.capacidade - 1:
+            print('Capacidade máxima atingida')
+            return
+        posicao = 0
+        for i in range(self.ultima_posicao + 1):
+            posicao = i
+            if self.valores[i].distancia_objetivo > vertice.distancia_objetivo:
+                break
+            if i == self.ultima_posicao:
+                posicao = i + 1
+        x = self.ultima_posicao
+        while x >= posicao:
+            self.valores[x + 1] = self.valores[x]
+            x -= 1
+        self.valores[posicao] = vertice
+        self.ultima_posicao += 1
+
+    def imprime(self):
+        if self.ultima_posicao == -1:
+            print('O vetor está vazio')
+        else:
+            for i in range(self.ultima_posicao + 1):
+                print(i, ' - ', self.valores[i].rotulo, ' - ', self.valores[i].distancia_objetivo)
+                
+vetor = VetorOrdenado(5)
+vetor.insere(grafo.arad)
+vetor.insere(grafo.craiova)
+vetor.insere(grafo.bucharest)
+vetor.insere(grafo.dobreta)
+
+vetor.imprime()
+
+
+
+
